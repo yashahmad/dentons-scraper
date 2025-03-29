@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 import time
+import json
 
 # Set up Chrome options
 chrome_options = Options()
@@ -26,14 +27,25 @@ time.sleep(3)
 # BeautifulSoup to parse the page source
 soup = BeautifulSoup(driver.page_source, "html.parser")
 
-books = soup.find_all("div", class_="person-tab")
+professionals = soup.find_all("div", class_="person-tab")
 
-for book in books:
-    name = book.find("h4", class_="ng-binding").text
-    info = book.find_all("p", class_="ng-binding")
-    designation = info[0].text
-    places = info[1].text
-    print(f"{name} {designation} {places}")
+data = []
+
+for prof in professionals:
+    name = prof.find("h4", class_="ng-binding").text.strip()
+    info = prof.find_all("p", class_="ng-binding")
+    if len(info) >= 2:
+        designation = info[0].text.strip()
+        places = info[1].text.strip()
+        data.append({
+            "name": name,
+            "designation": designation,
+            "places": places
+        })
+
+# Write the data to a JSON file
+with open("professionals.json", "w") as json_file:
+    json.dump(data, json_file, indent=4)
 
 # Close the browser
 driver.quit()
