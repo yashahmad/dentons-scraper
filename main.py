@@ -12,7 +12,7 @@ chrome_options.add_argument("--headless=new")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 
-# Initialize WebDriver
+# Initializing WebDriver
 service = Service()
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
@@ -23,17 +23,17 @@ driver.get(url)
 # Wait for page to load
 time.sleep(3)  
 
-# Get page source and parse with BeautifulSoup
+# BeautifulSoup to parse the page source
 soup = BeautifulSoup(driver.page_source, "html.parser")
 
-# Find all books
 books = soup.find_all("div", class_="person-tab")
-print("Books",books)
 
-# Extract book titles and prices
 for book in books:
     name = book.find("h4", class_="ng-binding").text
-    print(f"{name}")
+    info = book.find_all("p", class_="ng-binding")
+    designation = info[0].text
+    places = info[1].text
+    print(f"{name} {designation} {places}")
 
 # Close the browser
 driver.quit()
