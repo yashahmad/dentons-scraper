@@ -17,23 +17,23 @@ service = Service()
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
 # Open the website
-url = "https://books.toscrape.com/"
+url = "https://www.dentons.com/en/our-professionals"
 driver.get(url)
 
 # Wait for page to load
-time.sleep(2)  
+time.sleep(3)  
 
 # Get page source and parse with BeautifulSoup
 soup = BeautifulSoup(driver.page_source, "html.parser")
 
 # Find all books
-books = soup.find_all("article", class_="product_pod")
+books = soup.find_all("div", class_="person-tab")
+print("Books",books)
 
 # Extract book titles and prices
 for book in books:
-    title = book.h3.a["title"]
-    price = book.find("p", class_="price_color").text
-    print(f"{title} - {price}")
+    name = book.find("h4", class_="ng-binding").text
+    print(f"{name}")
 
 # Close the browser
 driver.quit()
